@@ -9,7 +9,18 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist, node_modules"] },
+  {
+    ignores: [
+      "dist",
+      "node_modules",
+      "package.json",
+      "package-lock.json",
+      ".vite",
+      "components.json",
+      "src/components/ui/**",
+      "tailwind.config.js",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{js,jsx,ts,tsx}"],
@@ -31,8 +42,9 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
+      "@typescript-eslint/no-require-imports": "warn",
       "no-unused-vars": [
-        "error",
+        "warn",
         {
           vars: "all",
           args: "all",
