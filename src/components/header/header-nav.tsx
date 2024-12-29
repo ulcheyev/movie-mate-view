@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from "react-router";
 import { NavItem } from "./nav-items";
+import { cn } from "@/lib/utils";
 
 interface HeaderNavProps {
   navItem: NavItem;
@@ -11,7 +12,13 @@ const HeaderNav = ({ navItem }: HeaderNavProps) => {
   return (
     <NavLink
       to={navItem.path}
-      className={`${pathname === navItem.path ? "after:w-full pointer-events-none" : "hover:after:w-full"} relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-current after:transition-all after:duration-300`}
+      className={cn(
+        "relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-current after:w-0 after:transition-all after:duration-300",
+        {
+          "after:w-full pointer-events-none": pathname === navItem.path,
+          "hover:after:w-full": pathname !== navItem.path,
+        }
+      )}
     >
       {navItem.title}
     </NavLink>

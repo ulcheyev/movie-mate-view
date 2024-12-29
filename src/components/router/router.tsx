@@ -4,15 +4,14 @@ import {
   Route,
 } from "react-router";
 import Layout from "../layout/layout";
-import HomePage from "@/pages/HomePage";
-import WatchlistPage from "@/pages/WatchlistPage";
-import LoginPage from "@/pages/LoginPage";
 import ProtectedRoute from "./protected-route";
+import { LoginPage, WatchlistPage, SignUpPage, HomePage } from "@/pages";
 
 export const Router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="login" element={<LoginPage />} />
+      <Route path="signup" element={<SignUpPage />} />
       <Route
         path="/"
         element={

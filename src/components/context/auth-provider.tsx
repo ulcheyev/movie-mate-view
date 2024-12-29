@@ -7,6 +7,7 @@ interface AuthProviderProps {
 interface AuthProviderState {
   isAuthenticated: () => boolean;
   login: () => void;
+  signUp: () => void;
   logout: () => void;
 }
 
@@ -26,6 +27,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.setItem("token", "token");
   };
 
+  const signUp = () => {
+    console.log("Mocking sign up...");
+  };
+
   const logout = () => {
     console.log("Mocking logout...");
     localStorage.removeItem("token");
@@ -38,6 +43,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const authContextVals: AuthProviderState = {
     isAuthenticated: isAuthenticated,
     login: login,
+    signUp: signUp,
     logout: logout,
   };
 
