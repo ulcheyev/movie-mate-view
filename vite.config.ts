@@ -4,6 +4,7 @@ import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/movie-mate-view",
   plugins: [react()],
   resolve: {
     alias: {
