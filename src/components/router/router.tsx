@@ -6,6 +6,7 @@ import {
 import Layout from "../layout/layout";
 import ProtectedRoute from "./protected-route";
 import { LoginPage, WatchlistPage, SignUpPage, HomePage } from "@/pages";
+import MoviePage from "@/pages/MoviePage";
 
 export const Router = createBrowserRouter(
   createRoutesFromElements(
@@ -22,6 +23,7 @@ export const Router = createBrowserRouter(
       >
         <Route index element={<HomePage />} />
         <Route path="watchlist" element={<WatchlistPage />} />
+        <Route path="movie/:id" element={<MoviePage />} />
       </Route>
     </>
   )
