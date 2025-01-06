@@ -5,13 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/components/context/auth-provider";
 import { Link, useNavigate } from "react-router";
-import { FormEvent, useEffect, useRef } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { LoginRequest } from "@/api/authApi";
 
 const LoginForm = ({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) => {
   const { login } = useAuth();
+  const [form, setForm] = useState<LoginRequest>({
+    identifier: "",
+    password: "",
+  });
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -19,10 +24,19 @@ const LoginForm = ({
     inputRef.current?.focus();
   }, []);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();
-    login();
-    navigate("/", { replace: true });
+    login(form).then(() => {
+      navigate("/", { replace: true });
+    });
   };
 
   return (
@@ -36,19 +50,24 @@ const LoginForm = ({
             <div className="grid gap-6">
               <div className="grid gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="identifier">Email</Label>
                   <Input
-                    id="email"
-                    type="email"
+                    id="identifier"
+                    type="identifier"
                     placeholder="mail@example.com"
                     ref={inputRef}
+                    onChange={handleInputChange}
                   />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
                     <Label htmlFor="password">Password</Label>
                   </div>
-                  <Input id="password" type="password" />
+                  <Input
+                    id="password"
+                    type="password"
+                    onChange={handleInputChange}
+                  />
                 </div>
                 <Button onClick={handleLogin} className="w-full">
                   Login

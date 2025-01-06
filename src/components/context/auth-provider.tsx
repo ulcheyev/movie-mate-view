@@ -1,19 +1,29 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import {
+  AppUser,
+  AuthResponse,
+  LoginRequest,
+  loginUser,
+  RegisterRequest,
+  registerUser,
+} from "@/api/authApi.ts";
+import { AxiosResponse } from "axios";
 
 interface AuthProviderProps {
   children: React.ReactNode;
 }
 
 interface AuthProviderState {
+  user: AppUser | null;
   isAuthenticated: () => boolean;
-  login: () => void;
-  signUp: () => void;
+  login: (req: LoginRequest) => Promise<void>;
+  signUp: (req: RegisterRequest) => Promise<void>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthProviderState | undefined>(undefined);
 
-export const useAuth = () => {
+const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
@@ -22,18 +32,37 @@ export const useAuth = () => {
 };
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const login = () => {
-    console.log("Mocking login...");
-    localStorage.setItem("token", "token");
+  const [user, setUser] = useState<AppUser | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const setup = (res: AxiosResponse<AuthResponse, any>) => {
+    localStorage.setItem("token", res.data.accessToken);
+    localStorage.setItem("user", JSON.stringify(res.data.userDetails));
+    setUser(res.data.userDetails);
   };
 
-  const signUp = () => {
-    console.log("Mocking sign up...");
+  const signUp = async (req: RegisterRequest) => {
+    await registerUser(req).then((res) => {
+      setup(res);
+    });
+  };
+
+  const login = async (req: LoginRequest) => {
+    await loginUser(req).then((res) => {
+      setup(res);
+    });
   };
 
   const logout = () => {
-    console.log("Mocking logout...");
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
   };
 
   const isAuthenticated = (): boolean => {
@@ -41,6 +70,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const authContextVals: AuthProviderState = {
+    user: user,
     isAuthenticated: isAuthenticated,
     login: login,
     signUp: signUp,
@@ -54,4 +84,4 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 };
 
-export default AuthProvider;
+export { AuthProvider, useAuth };
