@@ -26,5 +26,8 @@ export const Router = createBrowserRouter(
         <Route path="movie/:id" element={<MoviePage />} />
       </Route>
     </>
-  )
+  ),
+  {
+    basename: "/movie-mate-view",
+  }
 );
