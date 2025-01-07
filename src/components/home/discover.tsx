@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MovieCard from "../movie-card/movie-card";
-import { movies } from "@/mock/movie";
 import {
   Pagination,
   PaginationContent,
@@ -8,14 +7,26 @@ import {
   PaginationButtonNext,
   PaginationButtonPrevious,
 } from "@/components/ui/pagination.tsx";
+import { MoviePreview, PageDto } from "@/api/movieApi";
+import { getMoviePage } from "../../api/movieApi";
 
 const Discover = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [movies, setMovies] = useState<PageDto<MoviePreview> | null>(null);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await getMoviePage({ page: currentPage });
+      setMovies(res.data);
+    };
+
+    fetch();
+  }, [currentPage]);
 
   return (
     <>
       <div className="grid grid-cols-5 gap-3">
-        {movies.slice(currentPage * 10, currentPage * 10 + 10).map((movie) => (
+        {movies?.elements.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}
       </div>
@@ -34,7 +45,7 @@ const Discover = () => {
               onClick={() => {
                 setCurrentPage(currentPage + 1);
               }}
-              isActive={currentPage * 10 + 10 > movies.length}
+              isActive={!movies?.isLast}
             />
           </PaginationItem>
         </PaginationContent>

@@ -1,17 +1,15 @@
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { RatingDto } from "@/api/movieApi";
 
 interface RatingProps {
   className?: string;
-  rating: {
-    avg: number;
-    count: number;
-  };
+  rating: RatingDto;
 }
 
 const Rating = ({ className, rating }: RatingProps) => {
-  const fullStars = Math.floor(rating.avg);
-  const hasHalfStar = rating.avg % 1 >= 0.5;
+  const fullStars = Math.floor(rating.average || 0);
+  const hasHalfStar = rating.average % 1 >= 0.5;
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
   return (

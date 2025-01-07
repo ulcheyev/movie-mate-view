@@ -35,7 +35,7 @@ export interface MovieDetails {
     firstName: string;
     lastName: string;
     role: string;
-  };
+  }[];
   synopsis: string;
   releaseDate: Date;
   language: string;
@@ -61,7 +61,7 @@ type MoviePageParams = {
 
 const url = "/movies";
 
-export const getMovieDetails = async (id: number) => {
+export const getMovieDetails = async (id: string) => {
   return await apiClient.get<MovieDetails>(`${url}/${id}`);
 };
 
@@ -71,7 +71,15 @@ export const getMoviePage = async ({
   sortBy = "title",
   order = "ASC",
 }: MoviePageParams) => {
-  return await apiClient.get<PageDto<MoviePreview>>(url, {
+  return await apiClient.get<PageDto<MoviePreview>>(`${url}/all`, {
     params: { page, size, sortBy, order },
+  });
+};
+
+export const getMoviesByIds = async (ids: string[]) => {
+  return await apiClient.post<MovieDetails[]>(`${url}/all-by-ids`, ids, {
+    headers: {
+      "Content-Type": "application/json", // Set the Content-Type header
+    },
   });
 };
